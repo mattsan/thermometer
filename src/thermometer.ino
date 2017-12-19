@@ -3,6 +3,7 @@
 #include <DHT.h>
 #include "display.h"
 #include "thermo_sensor.h"
+#include "idobata_poster.h"
 
 class Thermometer {
 public:
