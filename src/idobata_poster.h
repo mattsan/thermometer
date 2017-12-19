@@ -26,8 +26,9 @@ public:
     wifi_.disableMUX();
   }
 
-  String post(const String& s) {
-    wifi_.createTCP(HOST_NAME, HOST_PORT);
+  String post(const String& source) {
+    String request_string = "source=";
+    request_string.concat(urlencode(source));
 
     String request =
       "POST " PATH " HTTP/1.1\r\n"
@@ -35,10 +36,11 @@ public:
       "Content-Type: application/x-www-form-urlencoded\r\n"
       "Content-Length: ";
 
-    request.concat(String(s.length(), DEC));
+    request.concat(String(request_string.length(), DEC));
     request.concat("\r\n\r\n");
-    request.concat(s);
+    request.concat(request_string);
 
+    wifi_.createTCP(HOST_NAME, HOST_PORT);
     wifi_.send(reinterpret_cast<const uint8_t*>(request.c_str()), request.length());
 
     uint8_t buffer[512];
@@ -54,6 +56,9 @@ public:
     return response;
   }
 
+  String urlencode(const String& source) {
+    return source; // TODO implement url-encode
+  }
 private:
   SoftwareSerial serial_;
   ESP8266 wifi_;
